@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head>
+<body>
+	
+	<h1>HttpSession Example</h1>
+	
+	name: <input type="text" id="name" />
+	lastname: <input type="text" id="lastname" />
+	<br /><br />
+	
+	<div>
+		<button onclick="login()">LOGIN</button>	
+		<button onclick="consult()">CONSULT</button>
+		<button onclick="logout()">LOGOUT</button>
+	</div>
+	<div id="status"></div>
+
+	<script>
+	
+		var xhr = new XMLHttpRequest();
+	
+		function $ (id) {
+			return document.getElementById(id);
+		}	
+		
+		function login () {
+			
+			var name = encodeURI($("name").value);
+			var lastname = encodeURI($("lastname").value);
+			
+			xhr.onreadystatechange = function () {
+				if (xhr.status === 200 && xhr.readyState === 4) {
+					var data = JSON.parse(xhr.responseText);
+					$("status").textContent = data.response;
+				}		
+			}
+			
+			xhr.open("POST", "./login", true);
+			var params = "name="+name+"&lastname="+lastname;
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.send(params);			
+		}
+		
+		function consult () {
+			xhr.onreadystatechange = function () {
+				if (xhr.status === 200 && xhr.readyState === 4) {
+					var data = JSON.parse(xhr.responseText);
+					$("status").textContent = JSON.stringify(data.user);
+				}		
+			}
+			
+			xhr.open("GET", "./consult", true);
+			xhr.send();	
+		}
+		
+		function logout () {
+			xhr.onreadystatechange = function () {
+				if (xhr.status === 200 && xhr.readyState === 4) {
+					var data = JSON.parse(xhr.responseText);
+					$("status").textContent = data.response;
+				}		
+			}
+			
+			xhr.open("POST", "./logout", true);
+			xhr.send();	
+		}
+	
+	</script>
+</body>
+</html>
